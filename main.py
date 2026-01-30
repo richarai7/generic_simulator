@@ -46,6 +46,13 @@ Examples:
         help="Maximum simulation time (optional). If not set, runs until completion."
     )
     
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=None,
+        help="Random seed for reproducibility (optional)."
+    )
+    
     args = parser.parse_args()
     
     # Validate config file exists
@@ -65,7 +72,9 @@ Examples:
         
         # Create and run simulator
         print("Initializing simulator...")
-        simulator = Simulator(config)
+        if args.seed is not None:
+            print(f"Using random seed: {args.seed}")
+        simulator = Simulator(config, random_seed=args.seed)
         
         print(f"Running simulation (max_time={args.max_time or 'unlimited'})...")
         simulator.run(max_time=args.max_time)

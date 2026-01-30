@@ -84,31 +84,55 @@ class Simulator:
     Supports parallel execution and dependency management.
     """
     
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: Dict[str, Any], random_seed: Optional[int] = None):
         self.config = config
         self.devices: Dict[str, Device] = {}
         self.event_logger = EventLogger()
         self.env = simpy.Environment()
         self.device_resources: Dict[str, simpy.Resource] = {}
         self.device_completion_events: Dict[str, simpy.Event] = {}
+        self.upstream_dependencies: Dict[str, List[str]] = {}
+        self.device_started: Dict[str, bool] = {}
+        
+        # Set random seed if provided
+        if random_seed is not None:
+            random.seed(random_seed)
         
         # Load devices from config
         self._load_devices()
+        self._validate_config()
+        self._build_dependency_graph()
         
     def _load_devices(self):
         """Load all devices from configuration."""
         for device_config in self.config.get("devices", []):
+            device_id = device_config["id"]
+            
+            # Check for duplicate device IDs
+            if device_id in self.devices:
+                raise ValueError(f"Duplicate device ID found: {device_id}")
+            
+            # Validate timing parameters
+            wait_execution_min = device_config.get("wait_execution_min", 0)
+            wait_execution_max = device_config.get("wait_execution_max", 0)
+            if wait_execution_max < wait_execution_min:
+                raise ValueError(
+                    f"Device {device_id}: wait_execution_max ({wait_execution_max}) "
+                    f"must be >= wait_execution_min ({wait_execution_min})"
+                )
+            
             device = Device(
-                device_id=device_config["id"],
+                device_id=device_id,
                 device_type=device_config["type"],
                 wait_start=device_config.get("wait_start", 0),
-                wait_execution_min=device_config.get("wait_execution_min", 0),
-                wait_execution_max=device_config.get("wait_execution_max", 0),
+                wait_execution_min=wait_execution_min,
+                wait_execution_max=wait_execution_max,
                 wait_exit=device_config.get("wait_exit", 0),
                 fail_prob=device_config.get("fail_prob", 0.0),
                 outputs=device_config.get("outputs", [])
             )
             self.devices[device.device_id] = device
+            self.device_started[device.device_id] = False
             
             # Create a resource for each device (capacity = 1 means one job at a time)
             self.device_resources[device.device_id] = simpy.Resource(self.env, capacity=1)
@@ -116,13 +140,25 @@ class Simulator:
             # Create completion event for each device
             self.device_completion_events[device.device_id] = self.env.event()
     
-    def _find_upstream_dependencies(self, device_id: str) -> List[str]:
-        """Find all devices that have this device as an output."""
-        dependencies = []
-        for dev_id, device in self.devices.items():
-            if device_id in device.outputs:
-                dependencies.append(dev_id)
-        return dependencies
+    def _validate_config(self):
+        """Validate that all output IDs reference existing devices."""
+        for device in self.devices.values():
+            for output_id in device.outputs:
+                if output_id not in self.devices:
+                    raise ValueError(
+                        f"Device {device.device_id} references non-existent output device: {output_id}"
+                    )
+    
+    def _build_dependency_graph(self):
+        """Build the upstream dependency graph for efficient lookup."""
+        # Initialize empty lists for all devices
+        for device_id in self.devices:
+            self.upstream_dependencies[device_id] = []
+        
+        # Build the graph
+        for device in self.devices.values():
+            for output_id in device.outputs:
+                self.upstream_dependencies[output_id].append(device.device_id)
     
     def _device_process(self, device: Device, job_id: int):
         """
@@ -130,7 +166,7 @@ class Simulator:
         Handles the three wait states and failure probability.
         """
         # Wait for upstream dependencies to complete
-        upstream_deps = self._find_upstream_dependencies(device.device_id)
+        upstream_deps = self.upstream_dependencies.get(device.device_id, [])
         for dep_id in upstream_deps:
             if dep_id in self.device_completion_events:
                 yield self.device_completion_events[dep_id]
@@ -198,11 +234,19 @@ class Simulator:
         if not self.device_completion_events[device.device_id].triggered:
             self.device_completion_events[device.device_id].succeed()
         
-        # Trigger downstream devices
+        # Trigger downstream devices (only if not already started)
         for output_id in device.outputs:
-            if output_id in self.devices:
-                # Create a new process for each downstream device
-                self.env.process(self._device_process(self.devices[output_id], job_id))
+            if output_id in self.devices and not self.device_started[output_id]:
+                # Check if all upstream dependencies are complete
+                all_deps_complete = all(
+                    self.device_completion_events[dep_id].triggered
+                    for dep_id in self.upstream_dependencies[output_id]
+                )
+                
+                if all_deps_complete:
+                    # Mark as started and create process
+                    self.device_started[output_id] = True
+                    self.env.process(self._device_process(self.devices[output_id], job_id))
     
     def run(self, max_time: Optional[float] = None):
         """
@@ -214,8 +258,7 @@ class Simulator:
         # Find entry point devices (devices with no upstream dependencies)
         entry_devices = []
         for device_id in self.devices:
-            upstream = self._find_upstream_dependencies(device_id)
-            if not upstream:
+            if not self.upstream_dependencies[device_id]:
                 entry_devices.append(device_id)
         
         self.event_logger.log_event(
@@ -232,6 +275,7 @@ class Simulator:
         job_id = 1
         for device_id in entry_devices:
             device = self.devices[device_id]
+            self.device_started[device_id] = True
             self.env.process(self._device_process(device, job_id))
         
         # Run the simulation

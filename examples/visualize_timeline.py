@@ -27,6 +27,10 @@ def visualize_timeline(filepath, max_width=80):
         print("Error: Could not find simulation end time")
         return
     
+    if sim_end <= 0:
+        print("Error: Simulation duration is 0 or negative")
+        return
+    
     # Collect device execution intervals
     device_intervals = {}
     device_starts = {}
