@@ -72,7 +72,11 @@ optional arguments:
 
 ## Configuration File Structure
 
-Configuration files define the entire process workflow in JSON format:
+Configuration files define the entire process workflow in JSON format.
+
+**For complete configuration reference, see [docs/CONFIG_REFERENCE.md](docs/CONFIG_REFERENCE.md)**
+
+Quick overview:
 
 ```json
 {
