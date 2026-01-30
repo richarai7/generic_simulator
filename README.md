@@ -2,6 +2,8 @@
 
 A flexible, config-driven simulation framework for modeling complex process chains with parallel execution support. Built on SimPy, this asset enables users to model any process workflow by simply editing a JSON configuration file—no code changes required.
 
+**⚡ New to this project? Check out the [Quick Start Guide](QUICKSTART.md) to get running in 5 minutes!**
+
 ## Overview
 
 This simulation environment is designed with **assetization** in mind, making it easy to:
