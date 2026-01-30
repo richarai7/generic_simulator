@@ -93,6 +93,12 @@ class Device(ABC):
                     self.failed = True
                     self.state = "failed"
                     self.log_event("failed", {"reason": "random_failure"})
+                    # Exit wait state before breaking
+                    self.state = "waiting_to_exit"
+                    self.log_event("waiting_to_exit")
+                    yield self.env.timeout(0.1)
+                    self.state = "exited"
+                    self.log_event("exited")
                     break
                 
                 # Process device logic
@@ -111,11 +117,10 @@ class Device(ABC):
         except simpy.Interrupt:
             self.state = "interrupted"
             self.log_event("interrupted")
-        finally:
-            # Wait state 2: Exit wait
+            # Exit wait state after interrupt
             self.state = "waiting_to_exit"
             self.log_event("waiting_to_exit")
-            yield self.env.timeout(0.1)  # Small delay for exit
+            yield self.env.timeout(0.1)
             self.state = "exited"
             self.log_event("exited")
 

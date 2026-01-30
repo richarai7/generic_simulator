@@ -1,0 +1,111 @@
+┌────────────────────────────────────────────────────────────────────────┐
+│                    Generic Simulator Configuration                      │
+└────────────────────────────────────────────────────────────────────────┘
+
+┌─ Simulation Control ──────────────────────────────────────────────────┐
+│                                                                         │
+│  ● Running                                                             │
+│                                                                         │
+│  Progress: ████████████████░░░░░░░░  45.2 / 100                       │
+│                                                                         │
+│  Duration: [  100  ] time units                                        │
+│                                                                         │
+│  [ Start Simulation ]  [ Stop Simulation ]                             │
+│                                                                         │
+│  ── Device States ──────────────────────────────────────────────       │
+│                                                                         │
+│  │ temperature_sensor  │ running      │ (green)                       │
+│  │ data_processor      │ running      │ (green)                       │
+│  │ hvac_actuator       │ running      │ (green)                       │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─ Configuration Editor ────────────────────────────────────────────────┐
+│                                                                         │
+│  Name: simple_chain                                                    │
+│  Description: A simple chain of sensor → processor → actuator          │
+│                                                                         │
+│  ── Devices (3) ────────────────────────────  [ + Add Device ]         │
+│                                                                         │
+│  ┌─ temperature_sensor ──────────────────────────────────────── [×] ┐ │
+│  │                                                                   │ │
+│  │  Type:        [Sensor ▼]                                          │ │
+│  │  Interval:    [   5.0   ]                                         │ │
+│  │  Failure Prob: [  0.05   ]                                        │ │
+│  │                                                                   │ │
+│  │  Sensor Configuration:                                            │ │
+│  │    [  15.0  ]  [  30.0  ]  [ celsius ]                            │ │
+│  │    Min Value    Max Value    Unit                                 │ │
+│  └───────────────────────────────────────────────────────────────────┘ │
+│                                                                         │
+│  ┌─ data_processor ────────────────────────────────────────────── [×] ┐ │
+│  │                                                                   │ │
+│  │  Type:        [Processor ▼]                                       │ │
+│  │  Interval:    [  10.0   ]                                         │ │
+│  │  Failure Prob: [  0.02   ]                                        │ │
+│  └───────────────────────────────────────────────────────────────────┘ │
+│                                                                         │
+│  ┌─ hvac_actuator ─────────────────────────────────────────────── [×] ┐ │
+│  │                                                                   │ │
+│  │  Type:        [Actuator ▼]                                        │ │
+│  │  Interval:    [  15.0   ]                                         │ │
+│  │  Failure Prob: [  0.01   ]                                        │ │
+│  └───────────────────────────────────────────────────────────────────┘ │
+│                                                                         │
+│  ── Connections (2) ────────────────────────  [ + Add Connection ]     │
+│                                                                         │
+│  [temperature_sensor ▼]  →  [data_processor ▼]        [×]             │
+│  [data_processor ▼]      →  [hvac_actuator ▼]         [×]             │
+│                                                                         │
+│  ────────────────────────────────────────────────────────────────      │
+│                                                                         │
+│  [ Save Configuration ]  [ Reset Changes ]                             │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+
+
+LOCKED STATE (when simulation is running):
+┌─────────────────────────────────────────────────────────────────────────┐
+│ ⚠ Configuration is locked while simulation is running                   │
+└─────────────────────────────────────────────────────────────────────────┘
+
+
+DEVICE STATES WITH WAIT STATES:
+┌─────────────────────────────────────────────────────────────────────────┐
+│  │ temperature_sensor  │ waiting_to_start  │ (yellow)                  │
+│  │ data_processor      │ waiting_to_start  │ (yellow)                  │
+│  │ hvac_actuator       │ waiting_to_start  │ (yellow)                  │
+└─────────────────────────────────────────────────────────────────────────┘
+              ↓ (after 0.1 time units)
+┌─────────────────────────────────────────────────────────────────────────┐
+│  │ temperature_sensor  │ running           │ (green)                   │
+│  │ data_processor      │ running           │ (green)                   │
+│  │ hvac_actuator       │ running           │ (green)                   │
+└─────────────────────────────────────────────────────────────────────────┘
+              ↓ (when a device fails)
+┌─────────────────────────────────────────────────────────────────────────┐
+│  │ temperature_sensor  │ failed            │ (red)                     │
+│  │ data_processor      │ running           │ (green)                   │
+│  │ hvac_actuator       │ running           │ (green)                   │
+└─────────────────────────────────────────────────────────────────────────┘
+              ↓ (device enters exit wait state)
+┌─────────────────────────────────────────────────────────────────────────┐
+│  │ temperature_sensor  │ waiting_to_exit   │ (orange)                  │
+│  │ data_processor      │ running           │ (green)                   │
+│  │ hvac_actuator       │ running           │ (green)                   │
+└─────────────────────────────────────────────────────────────────────────┘
+              ↓ (after 0.1 time units)
+┌─────────────────────────────────────────────────────────────────────────┐
+│  │ temperature_sensor  │ exited            │ (gray)                    │
+│  │ data_processor      │ running           │ (green)                   │
+│  │ hvac_actuator       │ running           │ (green)                   │
+└─────────────────────────────────────────────────────────────────────────┘
+
+
+COLOR LEGEND:
+  ● Green:  running - Device is actively processing
+  ● Yellow: waiting_to_start - Initialization wait state
+  ● Orange: waiting_to_exit - Shutdown wait state  
+  ● Red:    failed - Device has encountered a failure
+  ● Gray:   exited - Device has completed shutdown
+  ● Pink:   interrupted - Device was interrupted

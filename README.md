@@ -1,6 +1,6 @@
 # Generic Simulator
 
-A flexible, extensible device simulator framework built on SimPy, featuring SQLite-based configuration management and comprehensive event logging.
+A flexible, extensible device simulator framework built on SimPy, featuring SQLite-based configuration management, comprehensive event logging, and a React-based web UI for configuration and control.
 
 ## Features
 
@@ -9,8 +9,11 @@ A flexible, extensible device simulator framework built on SimPy, featuring SQLi
 - **Device models**: Extensible device types (sensors, processors, actuators)
 - **Output chaining**: Connect devices to create complex data flow topologies
 - **Failure simulation**: Configurable random failure probability for each device
+- **Wait states**: Devices support start_execution and exit wait states
 - **Event logging**: Real-time JSON logging of all events, state changes, and outputs
 - **CLI interface**: Easy-to-use command-line interface for managing and running simulations
+- **Web UI**: React-based interface for configuration editing and simulation control
+- **REST API**: Flask API server for programmatic access
 - **Extensible design**: Plugin-ready architecture for custom device types and future enhancements
 
 ## Installation
@@ -66,6 +69,53 @@ The simulation will:
 - Run for 100 time units
 - Log all events to `logs/simulation_simple_chain.json`
 - Display final device states
+
+## Web UI (New!)
+
+The Generic Simulator now includes a React-based web interface for configuration editing and simulation control.
+
+### Starting the Web UI
+
+```bash
+# Start the API server
+./start-web-ui.sh
+
+# In a new terminal, start the React app
+cd web-ui
+npm install  # First time only
+npm start
+```
+
+Then open http://localhost:3000 in your browser.
+
+### Web UI Features
+
+- **Visual Configuration Editor**: 
+  - Add/remove devices (sensors, processors, actuators)
+  - Configure device parameters (interval, failure probability)
+  - Manage device connections (output chaining)
+  - Real-time validation
+
+- **Simulation Control**:
+  - Start/stop simulations with custom duration
+  - Real-time progress bar
+  - Live device state monitoring
+  - Single simulation enforcement (only one simulation can run at a time)
+
+- **Wait States**: 
+  - Devices support `waiting_to_start` and `waiting_to_exit` states
+  - Visible in the device state display during simulation
+
+### API Endpoints
+
+The Flask API server provides REST endpoints:
+
+- `GET /api/health` - Health check
+- `GET /api/config` - Get current configuration
+- `POST /api/config` - Update configuration
+- `POST /api/simulation/start` - Start simulation
+- `POST /api/simulation/stop` - Stop simulation
+- `GET /api/simulation/status` - Get simulation status
 
 ## Usage
 
