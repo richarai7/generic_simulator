@@ -78,6 +78,11 @@ class Device(ABC):
 
     def run(self):
         """Main device process."""
+        # Wait state 1: Start execution wait
+        self.state = "waiting_to_start"
+        self.log_event("waiting_to_start")
+        yield self.env.timeout(0.1)  # Small delay for start execution
+        
         self.state = "running"
         self.log_event("started")
         
@@ -106,6 +111,13 @@ class Device(ABC):
         except simpy.Interrupt:
             self.state = "interrupted"
             self.log_event("interrupted")
+        finally:
+            # Wait state 2: Exit wait
+            self.state = "waiting_to_exit"
+            self.log_event("waiting_to_exit")
+            yield self.env.timeout(0.1)  # Small delay for exit
+            self.state = "exited"
+            self.log_event("exited")
 
     @abstractmethod
     def process_logic(self) -> Optional[Any]:
