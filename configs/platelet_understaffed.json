@@ -1,0 +1,112 @@
+{
+  "name": "Platelet Pooling - Understaffed Scenario",
+  "description": "Limited staff to demonstrate bottlenecks",
+  "version": "1.1",
+  "staff": {
+    "technician": 1,
+    "quality_specialist": 1,
+    "nurse": 1
+  },
+  "devices": [
+    {
+      "id": "collection",
+      "type": "collection_station",
+      "wait_start": 2.0,
+      "wait_execution_min": 15.0,
+      "wait_execution_max": 30.0,
+      "wait_exit": 1.0,
+      "fail_prob": 0.0,
+      "outputs": ["quality_check_1"],
+      "staff_required": {
+        "nurse": 1
+      }
+    },
+    {
+      "id": "quality_check_1",
+      "type": "quality_checker",
+      "wait_start": 0.5,
+      "wait_execution_min": 3.0,
+      "wait_execution_max": 5.0,
+      "wait_exit": 0.5,
+      "fail_prob": 0.0,
+      "outputs": ["storage_temp"],
+      "staff_required": {
+        "quality_specialist": 1
+      }
+    },
+    {
+      "id": "storage_temp",
+      "type": "temperature_controlled_storage",
+      "wait_start": 1.0,
+      "wait_execution_min": 60.0,
+      "wait_execution_max": 120.0,
+      "wait_exit": 1.0,
+      "fail_prob": 0.0,
+      "outputs": ["pooling"],
+      "staff_required": {}
+    },
+    {
+      "id": "pooling",
+      "type": "platelet_pooler",
+      "wait_start": 3.0,
+      "wait_execution_min": 10.0,
+      "wait_execution_max": 20.0,
+      "wait_exit": 2.0,
+      "fail_prob": 0.0,
+      "outputs": ["quality_check_2", "labeling"],
+      "staff_required": {
+        "technician": 1
+      }
+    },
+    {
+      "id": "quality_check_2",
+      "type": "quality_checker",
+      "wait_start": 0.5,
+      "wait_execution_min": 3.0,
+      "wait_execution_max": 5.0,
+      "wait_exit": 0.5,
+      "fail_prob": 0.0,
+      "outputs": ["packaging"],
+      "staff_required": {
+        "quality_specialist": 1
+      }
+    },
+    {
+      "id": "labeling",
+      "type": "label_printer",
+      "wait_start": 0.5,
+      "wait_execution_min": 1.0,
+      "wait_execution_max": 2.0,
+      "wait_exit": 0.5,
+      "fail_prob": 0.0,
+      "outputs": ["packaging"],
+      "staff_required": {
+        "technician": 1
+      }
+    },
+    {
+      "id": "packaging",
+      "type": "packager",
+      "wait_start": 1.0,
+      "wait_execution_min": 5.0,
+      "wait_execution_max": 8.0,
+      "wait_exit": 1.0,
+      "fail_prob": 0.0,
+      "outputs": ["final_storage"],
+      "staff_required": {
+        "technician": 1
+      }
+    },
+    {
+      "id": "final_storage",
+      "type": "cold_storage",
+      "wait_start": 0.5,
+      "wait_execution_min": 1.0,
+      "wait_execution_max": 2.0,
+      "wait_exit": 0.5,
+      "fail_prob": 0.0,
+      "outputs": [],
+      "staff_required": {}
+    }
+  ]
+}
