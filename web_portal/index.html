@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generic Simulator - Web Portal</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>⚙️ Generic Simulator Portal</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="pages/configurations.html">Configurations</a></li>
+                <li><a href="pages/dashboard.html">Dashboard</a></li>
+                <li><a href="pages/visualizer.html">Process Flow</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <h2>Welcome to the Generic Simulator Portal</h2>
+            <p class="subtitle">Model, simulate, and analyze complex process workflows</p>
+        </section>
+
+        <section class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h3>Configuration Management</h3>
+                <p>Create, edit, and manage process configurations with an intuitive interface</p>
+                <a href="pages/configurations.html" class="btn btn-primary">View Configurations</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Simulation Dashboard</h3>
+                <p>View detailed metrics, event timelines, and performance analytics</p>
+                <a href="pages/dashboard.html" class="btn btn-primary">Open Dashboard</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3>Process Visualization</h3>
+                <p>Interactive flow diagrams showing device dependencies and workflows</p>
+                <a href="pages/visualizer.html" class="btn btn-primary">View Process Flow</a>
+            </div>
+        </section>
+
+        <section class="info-section">
+            <h3>Quick Start</h3>
+            <div class="steps">
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <div class="step-content">
+                        <h4>Select Configuration</h4>
+                        <p>Choose an existing configuration or create a new one</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <div class="step-content">
+                        <h4>Edit Parameters</h4>
+                        <p>Configure devices, timing, and dependencies</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <div class="step-content">
+                        <h4>View Results</h4>
+                        <p>Analyze simulation results and performance metrics</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="status-section">
+            <h3>System Status</h3>
+            <div class="status-grid">
+                <div class="status-item">
+                    <span class="status-label">API Status:</span>
+                    <span class="status-value" id="apiStatus">Checking...</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Configurations:</span>
+                    <span class="status-value" id="configCount">Loading...</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Last Simulation:</span>
+                    <span class="status-value" id="lastSim">Loading...</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2026 Generic Simulator Portal | Built with ❤️ for process simulation</p>
+        </div>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/home.js"></script>
+</body>
+</html>

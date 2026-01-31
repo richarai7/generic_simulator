@@ -43,6 +43,19 @@ Each device has three wait states:
 - Includes timestamps, device IDs, event types, and details
 - Ready for downstream processing and visualization
 
+### REST API (Azure Functions)
+- **GET /api/events**: Serve event logs to web dashboards and 3D views
+- **GET /api/config**: Retrieve process/device configurations
+- **POST /api/config**: Save updated configurations from web UI
+- Full documentation: [API Documentation](api_function_app/README.md)
+
+### Web Portal (Interactive UI)
+- **Configuration Management**: View, create, and edit process configurations
+- **Simulation Dashboard**: Metrics, analytics, and event timelines
+- **Process Flow Visualizer**: Interactive device dependency diagrams
+- **Responsive Design**: Works on desktop, tablet, and mobile
+- Full documentation: [Web Portal Guide](web_portal/README.md)
+
 ## Installation
 
 ```bash
@@ -260,11 +273,19 @@ This implementation is designed to evolve from POC to production asset:
 - 🔲 Config versioning and history
 - 🔲 Multiple simulation runs tracking
 
+### Phase 2.5 (API Layer)
+- ✅ Azure Functions API for event data
+- ✅ Configuration management endpoints
+- ✅ REST API for web frontend integration
+- ✅ Comprehensive API documentation
+
 ### Phase 3 (Web Portal)
-- 🔲 Web-based configuration editor
-- 🔲 Visual process designer (drag-and-drop)
-- 🔲 Real-time simulation monitoring
-- 🔲 Dashboard and analytics
+- ✅ Web-based configuration viewer and editor
+- ✅ Interactive process flow visualizer
+- ✅ Simulation results dashboard
+- ✅ Real-time metrics and analytics
+- ✅ Modern, responsive UI design
+- 🔲 Drag-and-drop process designer (future)
 
 ## Future UI/Portal Design
 
@@ -409,6 +430,7 @@ This implementation is designed to evolve from POC to production asset:
 
 ### Portal Features (Future)
 
+- **Azure Functions API**: REST API for event data and config management (✅ **Available Now!** - See [API Documentation](api_function_app/README.md))
 - **Drag-and-Drop Process Designer**: Visual interface to create device workflows
 - **Parameter Sliders**: Interactive controls for timing and probability adjustments
 - **Real-time Validation**: Immediate feedback on config errors
@@ -416,7 +438,6 @@ This implementation is designed to evolve from POC to production asset:
 - **Collaboration**: Share configs between team members
 - **Version Control**: Track config changes over time
 - **Batch Simulation**: Run multiple scenarios automatically
-- **API Access**: RESTful API for programmatic access
 
 ## Extending the Asset
 

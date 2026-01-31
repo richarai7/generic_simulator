@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Generic Simulator</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>⚙️ Generic Simulator Portal</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="configurations.html">Configurations</a></li>
+                <li><a href="dashboard.html" class="active">Dashboard</a></li>
+                <li><a href="visualizer.html">Process Flow</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="card-header">
+            <h2 class="card-title">Simulation Dashboard</h2>
+            <button class="btn btn-primary" onclick="loadLatestSimulation()">🔄 Refresh</button>
+        </div>
+
+        <div id="simulationInfo" style="margin-top: 2rem;">
+            <div class="spinner"></div>
+        </div>
+
+        <div id="metricsSection" style="display: none; margin-top: 2rem;">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Simulation Metrics</h3>
+                </div>
+                <div class="card-body">
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <span class="status-label">Total Events:</span>
+                            <span class="status-value" id="totalEvents">-</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Simulation Time:</span>
+                            <span class="status-value" id="simTime">-</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Generated At:</span>
+                            <span class="status-value" id="generatedAt">-</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Total Devices:</span>
+                            <span class="status-value" id="totalDevices">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="staffSection" style="display: none; margin-top: 2rem;">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Staff Utilization</h3>
+                </div>
+                <div class="card-body">
+                    <div id="staffMetrics"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="deviceSection" style="display: none; margin-top: 2rem;">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Device Activity</h3>
+                </div>
+                <div class="card-body">
+                    <div id="deviceActivity"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="timelineSection" style="display: none; margin-top: 2rem;">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Event Timeline</h3>
+                </div>
+                <div class="card-body">
+                    <div id="timeline"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="eventsSection" style="display: none; margin-top: 2rem;">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Recent Events</h3>
+                </div>
+                <div class="card-body">
+                    <div id="eventsList"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2026 Generic Simulator Portal</p>
+        </div>
+    </footer>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>
