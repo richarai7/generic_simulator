@@ -26,6 +26,12 @@ Each device has three wait states:
 - **Execution**: Random duration between min and max values
 - **Exit**: Minimum wait time after execution completes
 
+### Staff Utilization
+- **Staff resources** shared across devices
+- Automatic allocation and release tracking
+- **Utilization metrics** calculated automatically
+- Bottleneck detection and optimization insights
+
 ### Parallel Execution
 - Devices execute in parallel when dependencies allow
 - Automatic dependency resolution based on device outputs
@@ -33,6 +39,7 @@ Each device has three wait states:
 
 ### Event Logging
 - All device state transitions logged to JSON
+- Staff allocation/release events tracked
 - Includes timestamps, device IDs, event types, and details
 - Ready for downstream processing and visualization
 
@@ -85,6 +92,10 @@ Quick overview:
   "name": "Process Name",
   "description": "Process description",
   "version": "1.0",
+  "staff": {
+    "technician": 3,
+    "nurse": 2
+  },
   "devices": [
     {
       "id": "device_1",
@@ -94,7 +105,10 @@ Quick overview:
       "wait_execution_max": 20.0,
       "wait_exit": 1.0,
       "fail_prob": 0.01,
-      "outputs": ["device_2", "device_3"]
+      "outputs": ["device_2", "device_3"],
+      "staff_required": {
+        "technician": 1
+      }
     }
   ]
 }
@@ -112,6 +126,7 @@ Quick overview:
 | `wait_exit` | float | Minimum wait time after execution (seconds) |
 | `fail_prob` | float | Probability of failure (0.0 to 1.0) |
 | `outputs` | array | List of downstream device IDs |
+| `staff_required` | object | Staff resources needed (optional) |
 
 ### Process Flow
 
@@ -142,7 +157,16 @@ The simulation generates a JSON event log with the following structure:
         "state": "start"
       }
     }
-  ]
+  ],
+  "staff_utilization": {
+    "technician": {
+      "count": 3,
+      "total_busy_time": 56.95,
+      "total_available_time": 530.47,
+      "utilization_percentage": 10.74,
+      "allocations": 4
+    }
+  }
 }
 ```
 
@@ -155,6 +179,8 @@ The simulation generates a JSON event log with the following structure:
 - `exit_start`: Device enters exit state
 - `complete`: Device fully completes
 - `failure`: Device fails (process stops)
+- `staff_allocated`: Staff assigned to device
+- `staff_released`: Staff freed from device
 - `simulation_end`: Simulation completion
 
 ## Example Use Cases
@@ -162,6 +188,11 @@ The simulation generates a JSON event log with the following structure:
 ### 1. Platelet Pooling Process
 The included `configs/platelet_pooling.json` demonstrates a blood product processing workflow:
 - Collection → Quality Check → Temperature Storage → Pooling → Final QC + Labeling → Packaging → Cold Storage
+
+For staff utilization tracking, see `configs/platelet_pooling_with_staff.json`:
+- Tracks nurses, technicians, and quality specialists
+- Calculates utilization percentages
+- Identifies bottlenecks and over-staffing
 
 ### 2. Manufacturing Assembly Line
 Create a config for manufacturing with parallel assembly stations:
@@ -180,6 +211,38 @@ Create a config for manufacturing with parallel assembly stations:
 Model warehouse operations:
 - Order Receipt → Picking → Packing → Shipping Label → Dispatch
 
+## Analyzing Results
+
+### Basic Analysis
+Use the built-in analysis script to view device statistics:
+```bash
+python examples/analyze_log.py outputs/results.json
+```
+
+Output includes:
+- Device execution times
+- Success/failure rates
+- **Staff utilization** (if configured)
+
+### Staff Utilization Analysis
+For detailed staff insights:
+```bash
+python examples/analyze_staff_utilization.py outputs/results.json
+```
+
+This provides:
+- Utilization percentages by staff type
+- Allocation counts per device
+- **Bottleneck detection** (>70% utilization)
+- **Over-staffing alerts** (<20% utilization)
+- Optimization recommendations
+
+### Timeline Visualization
+View the process timeline:
+```bash
+python examples/visualize_timeline.py outputs/results.json
+```
+
 ## Assetization Roadmap
 
 This implementation is designed to evolve from POC to production asset:
@@ -189,6 +252,8 @@ This implementation is designed to evolve from POC to production asset:
 - ✅ CLI interface
 - ✅ Event logging
 - ✅ Parallel execution support
+- ✅ Staff utilization tracking
+- ✅ Resource bottleneck detection
 
 ### Phase 2 (Database Integration)
 - 🔲 SQLite/PostgreSQL for configuration storage

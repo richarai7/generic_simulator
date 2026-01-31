@@ -11,11 +11,32 @@ Configuration files are JSON documents with the following top-level structure:
   "name": "Process Name",
   "description": "Description of the process",
   "version": "1.0",
+  "staff": {
+    "technician": 3,
+    "nurse": 2
+  },
   "devices": [
     // Array of device objects
   ]
 }
 ```
+
+## Staff Configuration (Optional)
+
+The `staff` section defines the available staff resources for the simulation. Each entry specifies a staff type and the number available.
+
+```json
+"staff": {
+  "technician": 3,
+  "quality_specialist": 2,
+  "nurse": 2
+}
+```
+
+- **Staff types** can be any string identifier (e.g., "technician", "nurse", "quality_specialist")
+- **Count** must be a positive integer (> 0)
+- Staff resources are shared across all devices
+- Devices will wait for staff availability if all staff of a type are busy
 
 ## Device Configuration
 
@@ -34,6 +55,12 @@ Each device in the `devices` array has the following structure:
 | `fail_prob` | number | Probability of failure (0.0 to 1.0). 0.0 = never fails, 1.0 = always fails. | `0.01` |
 | `outputs` | array of strings | List of device IDs that this device triggers upon completion. Empty array if no downstream devices. | `["quality_check_1"]` |
 
+### Optional Fields
+
+| Field | Type | Description | Example |
+|-------|------|-------------|---------|
+| `staff_required` | object | Staff resources needed to operate this device. Keys are staff types, values are counts. | `{"technician": 2, "nurse": 1}` |
+
 ### Device Example
 
 ```json
@@ -45,7 +72,10 @@ Each device in the `devices` array has the following structure:
   "wait_execution_max": 30.0,
   "wait_exit": 1.0,
   "fail_prob": 0.01,
-  "outputs": ["quality_check_1"]
+  "outputs": ["quality_check_1"],
+  "staff_required": {
+    "nurse": 1
+  }
 }
 ```
 
@@ -197,6 +227,83 @@ Example with failure probability:
 ```
 
 If `risky_device` fails, `next_step` will never execute.
+
+## Staff Utilization
+
+### Basic Staff Configuration
+
+Staff resources are defined globally and shared across all devices:
+
+```json
+{
+  "staff": {
+    "technician": 3,
+    "nurse": 2,
+    "quality_specialist": 1
+  }
+}
+```
+
+### Assigning Staff to Devices
+
+Devices request staff when they start and release them when complete:
+
+```json
+{
+  "id": "pooling",
+  "type": "platelet_pooler",
+  "wait_start": 3.0,
+  "wait_execution_min": 10.0,
+  "wait_execution_max": 20.0,
+  "wait_exit": 2.0,
+  "fail_prob": 0.03,
+  "outputs": ["quality_check"],
+  "staff_required": {
+    "technician": 2  // Requires 2 technicians
+  }
+}
+```
+
+### Staff Behavior
+
+- **Allocation**: Staff is allocated when device starts (before START state)
+- **Waiting**: If staff unavailable, device waits until staff becomes free
+- **Release**: Staff is released after device completes (after EXIT state)
+- **Failure**: Staff is released immediately if device fails
+
+### Staff Utilization Metrics
+
+The simulation tracks and reports:
+- **Utilization percentage**: Time busy / Total available time
+- **Total busy time**: Sum of all allocation durations
+- **Number of allocations**: How many times staff was assigned
+- **Total available time**: Staff count × simulation duration
+
+### Example Output
+
+```json
+"staff_utilization": {
+  "technician": {
+    "count": 3,
+    "total_busy_time": 56.95,
+    "total_available_time": 530.47,
+    "utilization_percentage": 10.74,
+    "allocations": 4
+  }
+}
+```
+
+### Bottleneck Detection
+
+High utilization (>70%) indicates a bottleneck:
+- Consider increasing staff count
+- Optimize device timing
+- Parallelize processes differently
+
+Low utilization (<20%) indicates over-staffing:
+- Consider reducing staff count
+- Add more work to the process
+- Cost optimization opportunity
 
 ## Best Practices
 

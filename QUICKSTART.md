@@ -33,12 +33,32 @@ Total events logged: 42
 ## Analyze Results
 
 ```bash
-# View statistics
+# View device statistics and staff utilization
 python examples/analyze_log.py outputs/my_results.json
+
+# Detailed staff utilization analysis
+python examples/analyze_staff_utilization.py outputs/my_results.json
 
 # Visualize timeline
 python examples/visualize_timeline.py outputs/my_results.json
 ```
+
+## Try Staff Utilization
+
+Run the platelet pooling example with staff tracking:
+
+```bash
+python main.py -c configs/platelet_pooling_with_staff.json -o outputs/staff_results.json
+
+# Analyze staff metrics
+python examples/analyze_staff_utilization.py outputs/staff_results.json
+```
+
+This shows:
+- How busy each staff type is
+- Which devices use which staff
+- Bottleneck detection
+- Optimization opportunities
 
 ## Create Your Own Process
 
