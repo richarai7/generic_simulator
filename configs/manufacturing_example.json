@@ -1,0 +1,67 @@
+{
+  "name": "Simple Manufacturing Assembly Line",
+  "description": "Example of a parallel assembly process with convergence",
+  "version": "1.0",
+  "devices": [
+    {
+      "id": "raw_material_input",
+      "type": "material_loader",
+      "wait_start": 1.0,
+      "wait_execution_min": 5.0,
+      "wait_execution_max": 8.0,
+      "wait_exit": 0.5,
+      "fail_prob": 0.01,
+      "outputs": ["assembly_station_a", "assembly_station_b"]
+    },
+    {
+      "id": "assembly_station_a",
+      "type": "assembly_robot",
+      "wait_start": 2.0,
+      "wait_execution_min": 10.0,
+      "wait_execution_max": 15.0,
+      "wait_exit": 1.0,
+      "fail_prob": 0.03,
+      "outputs": ["merge_point"]
+    },
+    {
+      "id": "assembly_station_b",
+      "type": "assembly_robot",
+      "wait_start": 2.0,
+      "wait_execution_min": 12.0,
+      "wait_execution_max": 18.0,
+      "wait_exit": 1.0,
+      "fail_prob": 0.02,
+      "outputs": ["merge_point"]
+    },
+    {
+      "id": "merge_point",
+      "type": "merger",
+      "wait_start": 1.0,
+      "wait_execution_min": 3.0,
+      "wait_execution_max": 5.0,
+      "wait_exit": 0.5,
+      "fail_prob": 0.01,
+      "outputs": ["quality_assurance"]
+    },
+    {
+      "id": "quality_assurance",
+      "type": "qa_station",
+      "wait_start": 0.5,
+      "wait_execution_min": 5.0,
+      "wait_execution_max": 10.0,
+      "wait_exit": 0.5,
+      "fail_prob": 0.05,
+      "outputs": ["packaging"]
+    },
+    {
+      "id": "packaging",
+      "type": "packager",
+      "wait_start": 1.0,
+      "wait_execution_min": 3.0,
+      "wait_execution_max": 6.0,
+      "wait_exit": 1.0,
+      "fail_prob": 0.01,
+      "outputs": []
+    }
+  ]
+}
