@@ -49,6 +49,13 @@ Each device has three wait states:
 - **POST /api/config**: Save updated configurations from web UI
 - Full documentation: [API Documentation](api_function_app/README.md)
 
+### Web Portal (Interactive UI)
+- **Configuration Management**: View, create, and edit process configurations
+- **Simulation Dashboard**: Metrics, analytics, and event timelines
+- **Process Flow Visualizer**: Interactive device dependency diagrams
+- **Responsive Design**: Works on desktop, tablet, and mobile
+- Full documentation: [Web Portal Guide](web_portal/README.md)
+
 ## Installation
 
 ```bash
@@ -273,10 +280,12 @@ This implementation is designed to evolve from POC to production asset:
 - ✅ Comprehensive API documentation
 
 ### Phase 3 (Web Portal)
-- 🔲 Web-based configuration editor
-- 🔲 Visual process designer (drag-and-drop)
-- 🔲 Real-time simulation monitoring
-- 🔲 Dashboard and analytics
+- ✅ Web-based configuration viewer and editor
+- ✅ Interactive process flow visualizer
+- ✅ Simulation results dashboard
+- ✅ Real-time metrics and analytics
+- ✅ Modern, responsive UI design
+- 🔲 Drag-and-drop process designer (future)
 
 ## Future UI/Portal Design
 
