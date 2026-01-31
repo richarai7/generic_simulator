@@ -91,6 +91,25 @@ def analyze_event_log(filepath):
         print(f"Total Failures: {total_failures}")
     
     print("=" * 60)
+    
+    # Show staff utilization if available
+    staff_util = data.get('staff_utilization', {})
+    if staff_util:
+        print()
+        print("STAFF UTILIZATION")
+        print("-" * 60)
+        print(f"{'Staff Type':<20} {'Count':<8} {'Utilization':<15} {'Allocations':<12}")
+        print("-" * 60)
+        
+        for staff_type in sorted(staff_util.keys()):
+            util = staff_util[staff_type]
+            print(f"{staff_type:<20} {util['count']:<8} "
+                  f"{util['utilization_percentage']:<14.2f}% "
+                  f"{util['allocations']:<12}")
+        
+        print("=" * 60)
+    else:
+        print("=" * 60)
 
 
 if __name__ == "__main__":
