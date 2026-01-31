@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process Flow - Generic Simulator</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        #flowCanvas {
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: white;
+            cursor: move;
+        }
+        .device-node {
+            padding: 0.75rem 1.5rem;
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .device-node:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-lg);
+        }
+        .device-node.selected {
+            border-color: var(--success-color);
+            background: #d1fae5;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>⚙️ Generic Simulator Portal</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="configurations.html">Configurations</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="visualizer.html" class="active">Process Flow</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="card-header">
+            <h2 class="card-title">Process Flow Visualizer</h2>
+            <div>
+                <select id="configSelect" class="form-select" onchange="loadSelectedConfig()" style="display: inline-block; width: auto; margin-right: 1rem;">
+                    <option value="">Select a configuration...</option>
+                </select>
+                <button class="btn btn-primary" onclick="renderFlow()">🔄 Refresh</button>
+            </div>
+        </div>
+
+        <div id="flowInfo" style="margin-top: 2rem;">
+            <div class="alert alert-info">Select a configuration to visualize the process flow.</div>
+        </div>
+
+        <div id="flowSection" style="display: none; margin-top: 2rem;">
+            <div class="card">
+                <div class="card-header">
+                    <h3 id="flowTitle">Process Flow</h3>
+                </div>
+                <div class="card-body">
+                    <div id="flowVisualization" style="overflow: auto;">
+                        <canvas id="flowCanvas" width="1000" height="600"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="deviceInfo" style="display: none; margin-top: 2rem;">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Device Details</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label">Device ID:</label>
+                        <p id="deviceId"></p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Type:</label>
+                        <p id="deviceType"></p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Timing:</label>
+                        <p id="deviceTiming"></p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Failure Probability:</label>
+                        <p id="deviceFailProb"></p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Outputs (Downstream):</label>
+                        <p id="deviceOutputs"></p>
+                    </div>
+                    <div class="form-group" id="deviceStaffGroup" style="display: none;">
+                        <label class="form-label">Staff Required:</label>
+                        <p id="deviceStaff"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="flowLegend" style="display: none; margin-top: 2rem;">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Legend</h3>
+                </div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div class="status-item">
+                            <span style="display: inline-block; width: 20px; height: 20px; background: #2563eb; border-radius: 50%;"></span>
+                            <span style="margin-left: 0.5rem;">Device Node</span>
+                        </div>
+                        <div class="status-item">
+                            <span style="display: inline-block; width: 40px; height: 2px; background: #6b7280;"></span>
+                            <span style="margin-left: 0.5rem;">Device Connection</span>
+                        </div>
+                        <div class="status-item">
+                            <span style="display: inline-block; width: 20px; height: 20px; background: #10b981; border-radius: 50%;"></span>
+                            <span style="margin-left: 0.5rem;">Entry Device</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2026 Generic Simulator Portal</p>
+        </div>
+    </footer>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/visualizer.js"></script>
+</body>
+</html>
